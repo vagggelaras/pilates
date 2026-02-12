@@ -1,6 +1,27 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Menu, X, Flower2, Users, Dumbbell, Baby, Heart, Clock, Phone, Mail, MapPin } from 'lucide-react'
 import './App.css'
+
+/* ===== FADE-IN HOOK ===== */
+function useFadeIn(threshold = 0.15) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('visible')
+          observer.unobserve(el)
+        }
+      },
+      { threshold }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [threshold])
+  return ref
+}
 
 /* ===== DATA ===== */
 const services = [
@@ -99,20 +120,27 @@ function Hero() {
   return (
     <section className="hero">
       <div className="hero-bg" />
+      <div className="hero-decor-tl" />
+      <div className="hero-decor-br" />
       <div className="hero-content">
         <p className="hero-tagline">SePilateVo Studio</p>
         <h1 className="hero-title">Κίνηση με Συνείδηση.</h1>
         <p className="hero-title-sub">Δύναμη με Αρμονία.</p>
         <a href="#schedule" className="btn btn-primary">Κάνε Κράτηση</a>
       </div>
+      <div className="hero-scroll-hint">
+        <span>Scroll</span>
+        <div className="hero-scroll-line" />
+      </div>
     </section>
   )
 }
 
 function Intro() {
+  const ref = useFadeIn()
   return (
     <section className="intro" id="intro">
-      <div className="intro-inner">
+      <div className="intro-inner fade-in" ref={ref}>
         <div className="section-divider" />
         <h2 className="intro-title">Καλώς ήρθατε στο SePilateVo</h2>
         <p className="intro-text">
@@ -125,28 +153,38 @@ function Intro() {
           συνειδητή αναπνοή, βοηθώντας σας να χτίσετε δύναμη, ευλυγισία και ισορροπία —
           τόσο στο σώμα όσο και στο μυαλό.
         </p>
-        <p className="intro-signature">— Ελένη, η γυμνάστριά σας</p>
+        <p className="intro-signature">Ελένη, η γυμνάστριά σας</p>
       </div>
     </section>
   )
 }
 
+function ServiceCard({ service, index }) {
+  const ref = useFadeIn()
+  return (
+    <div className={`service-card fade-in fade-in-delay-${index + 1}`} ref={ref}>
+      <div className="service-icon">{service.icon}</div>
+      <h3>{service.title}</h3>
+      <p>{service.desc}</p>
+    </div>
+  )
+}
+
 function Services() {
+  const titleRef = useFadeIn()
   return (
     <section className="services" id="services">
       <div className="container">
-        <div className="section-divider" />
-        <h2 className="section-title">Οι Υπηρεσίες μας</h2>
-        <p className="section-subtitle">
-          Ανακαλύψτε το πρόγραμμα Pilates που ταιριάζει στις δικές σας ανάγκες
-        </p>
+        <div className="fade-in" ref={titleRef}>
+          <div className="section-divider" />
+          <h2 className="section-title">Οι Υπηρεσίες μας</h2>
+          <p className="section-subtitle">
+            Ανακαλύψτε το πρόγραμμα Pilates που ταιριάζει στις δικές σας ανάγκες
+          </p>
+        </div>
         <div className="services-grid">
           {services.map((s, i) => (
-            <div className="service-card" key={i}>
-              <div className="service-icon">{s.icon}</div>
-              <h3>{s.title}</h3>
-              <p>{s.desc}</p>
-            </div>
+            <ServiceCard key={i} service={s} index={i} />
           ))}
         </div>
       </div>
@@ -154,24 +192,35 @@ function Services() {
   )
 }
 
+function TestimonialCard({ testimonial, index }) {
+  const ref = useFadeIn()
+  return (
+    <div className={`testimonial-card fade-in fade-in-delay-${index + 1}`} ref={ref}>
+      <span className="testimonial-quote-icon">&ldquo;</span>
+      <div className="testimonial-stars">
+        {'★'.repeat(testimonial.stars)}
+      </div>
+      <p className="testimonial-text">{testimonial.text}</p>
+      <p className="testimonial-author">{testimonial.author}</p>
+    </div>
+  )
+}
+
 function Testimonials() {
+  const titleRef = useFadeIn()
   return (
     <section className="testimonials" id="testimonials">
       <div className="container">
-        <div className="section-divider" />
-        <h2 className="section-title">Τι Λένε για Εμάς</h2>
-        <p className="section-subtitle" style={{ color: 'var(--color-cream-dark)' }}>
-          Οι εμπειρίες των μαθητών μας μιλούν από μόνες τους
-        </p>
+        <div className="fade-in" ref={titleRef}>
+          <div className="section-divider" />
+          <h2 className="section-title">Τι Λένε για Εμάς</h2>
+          <p className="section-subtitle" style={{ color: 'rgba(237, 230, 216, 0.6)' }}>
+            Οι εμπειρίες των μαθητών μας μιλούν από μόνες τους
+          </p>
+        </div>
         <div className="testimonials-grid">
           {testimonials.map((t, i) => (
-            <div className="testimonial-card" key={i}>
-              <div className="testimonial-stars">
-                {'★'.repeat(t.stars)}
-              </div>
-              <p className="testimonial-text">"{t.text}"</p>
-              <p className="testimonial-author">{t.author}</p>
-            </div>
+            <TestimonialCard key={i} testimonial={t} index={i} />
           ))}
         </div>
       </div>
@@ -182,40 +231,46 @@ function Testimonials() {
 function Schedule() {
   const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
   const dayLabels = { mon: 'Δευ', tue: 'Τρι', wed: 'Τετ', thu: 'Πεμ', fri: 'Παρ', sat: 'Σαβ' }
+  const titleRef = useFadeIn()
+  const tableRef = useFadeIn()
 
   return (
     <section className="schedule" id="schedule">
       <div className="container">
-        <div className="section-divider" />
-        <h2 className="section-title">Εβδομαδιαίο Πρόγραμμα</h2>
-        <p className="section-subtitle">
-          Βρείτε το μάθημα που σας ταιριάζει και κλείστε τη θέση σας
-        </p>
-        <div className="schedule-table-wrapper">
-          <table className="schedule-table">
-            <thead>
-              <tr>
-                <th>Ώρα</th>
-                {days.map(d => <th key={d}>{dayLabels[d]}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {schedule.map((row, i) => (
-                <tr key={i}>
-                  <td><strong>{row.time}</strong></td>
-                  {days.map(d => (
-                    <td key={d} className={row[d] === '—' ? 'no-class' : 'has-class'}>
-                      {row[d]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="fade-in" ref={titleRef}>
+          <div className="section-divider" />
+          <h2 className="section-title">Εβδομαδιαίο Πρόγραμμα</h2>
+          <p className="section-subtitle">
+            Βρείτε το μάθημα που σας ταιριάζει και κλείστε τη θέση σας
+          </p>
         </div>
-        <p className="schedule-trainer">
-          Όλα τα μαθήματα με τη γυμνάστρια <strong>Ελένη</strong>
-        </p>
+        <div className="fade-in" ref={tableRef}>
+          <div className="schedule-table-wrapper">
+            <table className="schedule-table">
+              <thead>
+                <tr>
+                  <th>Ώρα</th>
+                  {days.map(d => <th key={d}>{dayLabels[d]}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {schedule.map((row, i) => (
+                  <tr key={i}>
+                    <td><strong>{row.time}</strong></td>
+                    {days.map(d => (
+                      <td key={d} className={row[d] === '—' ? 'no-class' : 'has-class'}>
+                        {row[d]}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="schedule-trainer">
+            Όλα τα μαθήματα με τη γυμνάστρια <strong>Ελένη</strong>
+          </p>
+        </div>
       </div>
     </section>
   )
@@ -227,7 +282,7 @@ function Footer() {
       <div className="footer-inner">
         <div className="footer-col">
           <h4>SePilateVo</h4>
-          <p>Κίνηση με Συνείδηση.<br />Δύναμη με Αρμονία.</p>
+          <p className="footer-tagline">Κίνηση με Συνείδηση.<br />Δύναμη με Αρμονία.</p>
         </div>
         <div className="footer-col">
           <h4>Επικοινωνία</h4>
