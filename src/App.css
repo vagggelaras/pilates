@@ -629,6 +629,57 @@
   color: var(--color-border);
 }
 
+/* Mobile cards - hidden on desktop */
+.schedule-mobile {
+  display: none;
+}
+
+.schedule-day-card {
+  background: var(--color-white);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(221, 213, 200, 0.5);
+  box-shadow: 0 2px 10px rgba(107, 84, 57, 0.04);
+}
+
+.schedule-day-title {
+  background: linear-gradient(135deg, var(--color-brown) 0%, var(--color-brown-dark) 100%);
+  color: var(--color-white);
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.schedule-day-classes {
+  padding: 0.3rem 0;
+}
+
+.schedule-day-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  border-bottom: 1px solid rgba(221, 213, 200, 0.35);
+}
+
+.schedule-day-item:last-child {
+  border-bottom: none;
+}
+
+.schedule-day-time {
+  font-size: 0.82rem;
+  color: var(--color-brown-dark);
+  font-weight: 700;
+  min-width: 115px;
+  letter-spacing: 0.3px;
+}
+
+.schedule-day-name {
+  font-size: 0.9rem;
+  color: var(--color-green-dark);
+}
+
 .schedule-trainer {
   text-align: center;
   margin-top: 2.5rem;
@@ -785,6 +836,17 @@
   .intro-signature::before,
   .intro-signature::after {
     display: none;
+  }
+
+  /* Schedule: table -> cards */
+  .schedule-desktop {
+    display: none;
+  }
+
+  .schedule-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
   }
 
   :root {

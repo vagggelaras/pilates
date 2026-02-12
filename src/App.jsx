@@ -230,7 +230,8 @@ function Testimonials() {
 
 function Schedule() {
   const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-  const dayLabels = { mon: 'Δευ', tue: 'Τρι', wed: 'Τετ', thu: 'Πεμ', fri: 'Παρ', sat: 'Σαβ' }
+  const dayLabels = { mon: 'Δευτέρα', tue: 'Τρίτη', wed: 'Τετάρτη', thu: 'Πέμπτη', fri: 'Παρασκευή', sat: 'Σάββατο' }
+  const dayLabelsShort = { mon: 'Δευ', tue: 'Τρι', wed: 'Τετ', thu: 'Πεμ', fri: 'Παρ', sat: 'Σαβ' }
   const titleRef = useFadeIn()
   const tableRef = useFadeIn()
 
@@ -245,12 +246,13 @@ function Schedule() {
           </p>
         </div>
         <div className="fade-in" ref={tableRef}>
-          <div className="schedule-table-wrapper">
+          {/* Desktop table */}
+          <div className="schedule-table-wrapper schedule-desktop">
             <table className="schedule-table">
               <thead>
                 <tr>
                   <th>Ώρα</th>
-                  {days.map(d => <th key={d}>{dayLabels[d]}</th>)}
+                  {days.map(d => <th key={d}>{dayLabelsShort[d]}</th>)}
                 </tr>
               </thead>
               <tbody>
@@ -266,6 +268,26 @@ function Schedule() {
                 ))}
               </tbody>
             </table>
+          </div>
+          {/* Mobile cards */}
+          <div className="schedule-mobile">
+            {days.map(d => {
+              const classes = schedule.filter(row => row[d] !== '—')
+              if (classes.length === 0) return null
+              return (
+                <div className="schedule-day-card" key={d}>
+                  <h3 className="schedule-day-title">{dayLabels[d]}</h3>
+                  <div className="schedule-day-classes">
+                    {classes.map((row, i) => (
+                      <div className="schedule-day-item" key={i}>
+                        <span className="schedule-day-time">{row.time}</span>
+                        <span className="schedule-day-name">{row[d]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
           </div>
           <p className="schedule-trainer">
             Όλα τα μαθήματα με τη γυμνάστρια <strong>Ελένη</strong>
