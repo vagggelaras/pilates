@@ -856,10 +856,6 @@
   display: none;
 }
 
-.footer.snap-section {
-  height: auto;
-  overflow: visible;
-}
 
 /* ===== DOT NAVIGATION ===== */
 .dot-nav {
@@ -943,10 +939,6 @@
     height: 100vh;
     height: 100dvh;
     overflow: visible;
-  }
-
-  .footer.snap-section {
-    height: auto;
   }
 
   .navbar-links {

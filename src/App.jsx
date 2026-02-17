@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Menu, X, Flower2, Users, Dumbbell, Baby, Heart, Clock, Phone, Mail, MapPin, ChevronLeft, ChevronRight } from 'lucide-react'
 import './App.css'
 
@@ -21,82 +21,6 @@ function useFadeIn(threshold = 0.15) {
     return () => observer.disconnect()
   }, [threshold])
   return ref
-}
-
-/* ===== FULL-PAGE SCROLL HOOK (desktop only) ===== */
-function useFullPageScroll() {
-  const isScrolling = useRef(false)
-  const currentSection = useRef(0)
-
-  const isTouchDevice = () => window.matchMedia('(pointer: coarse)').matches
-
-  const getSections = useCallback(() => {
-    return document.querySelectorAll('.snap-section')
-  }, [])
-
-  const scrollToSection = useCallback((index) => {
-    const sections = getSections()
-    if (index < 0 || index >= sections.length || isScrolling.current) return
-    isScrolling.current = true
-    currentSection.current = index
-    sections[index].scrollIntoView({ behavior: 'smooth' })
-    setTimeout(() => {
-      isScrolling.current = false
-    }, 900)
-  }, [getSections])
-
-  const findCurrentSection = useCallback(() => {
-    const sections = getSections()
-    const scrollY = window.scrollY
-    const viewportH = window.innerHeight
-    let closest = 0
-    let minDist = Infinity
-    sections.forEach((sec, i) => {
-      const dist = Math.abs(sec.offsetTop - scrollY - viewportH * 0.3)
-      if (dist < minDist) {
-        minDist = dist
-        closest = i
-      }
-    })
-    return closest
-  }, [getSections])
-
-  useEffect(() => {
-    if (isTouchDevice()) return
-
-    const handleWheel = (e) => {
-      e.preventDefault()
-      if (isScrolling.current) return
-      const cur = findCurrentSection()
-      if (e.deltaY > 0) {
-        scrollToSection(cur + 1)
-      } else {
-        scrollToSection(cur - 1)
-      }
-    }
-
-    const handleKeyDown = (e) => {
-      if (isScrolling.current) return
-      const cur = findCurrentSection()
-      if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-        e.preventDefault()
-        scrollToSection(cur + 1)
-      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-        e.preventDefault()
-        scrollToSection(cur - 1)
-      }
-    }
-
-    window.addEventListener('wheel', handleWheel, { passive: false })
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('wheel', handleWheel)
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [findCurrentSection, scrollToSection])
-
-  return { scrollToSection, findCurrentSection }
 }
 
 /* ===== DATA ===== */
@@ -502,8 +426,15 @@ function Footer() {
 /* ===== SECTION DOT NAV ===== */
 const sectionNames = ['Αρχική', 'Σχετικά', 'Υπηρεσίες', 'Κριτικές', 'Πρόγραμμα', 'Επικοινωνία']
 
-function DotNav({ scrollToSection }) {
+function DotNav() {
   const [active, setActive] = useState(0)
+
+  const scrollToSection = (index) => {
+    const sections = document.querySelectorAll('.snap-section')
+    if (sections[index]) {
+      sections[index].scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   useEffect(() => {
     const sections = document.querySelectorAll('.snap-section')
@@ -541,8 +472,6 @@ function DotNav({ scrollToSection }) {
 
 /* ===== APP ===== */
 function App() {
-  const { scrollToSection } = useFullPageScroll()
-
   return (
     <>
       <Navbar />
@@ -552,7 +481,7 @@ function App() {
       <Testimonials />
       <Schedule />
       <Footer />
-      <DotNav scrollToSection={scrollToSection} />
+      <DotNav />
     </>
   )
 }
