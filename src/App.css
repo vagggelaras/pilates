@@ -305,7 +305,7 @@
   pointer-events: none;
 }
 
-.intro::after {
+.intro-inner::before {
   content: '';
   position: absolute;
   bottom: -60px;
@@ -776,6 +776,60 @@
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
+  position: relative;
+}
+
+/* Smooth color transitions between sections */
+.snap-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.hero.snap-section::after {
+  background: linear-gradient(to bottom, transparent, rgba(250, 248, 243, 0.5));
+}
+
+.intro.snap-section::after {
+  background: linear-gradient(to bottom, transparent, rgba(245, 240, 232, 0.8));
+}
+
+.services.snap-section::after {
+  background: linear-gradient(to bottom, transparent, rgba(61, 53, 40, 0.15));
+}
+
+.testimonials.snap-section::after {
+  background: linear-gradient(to bottom, transparent, rgba(245, 240, 232, 0.15));
+}
+
+.schedule.snap-section::after {
+  background: linear-gradient(to bottom, transparent, rgba(61, 53, 40, 0.12));
+}
+
+/* Top blend for sections coming after a different background */
+.snap-section::before {
+  z-index: 5;
+}
+
+.testimonials.snap-section {
+  box-shadow: inset 0 20px 40px -15px rgba(61, 53, 40, 0.3);
+}
+
+.services.snap-section {
+  box-shadow: inset 0 20px 30px -15px rgba(61, 53, 40, 0.08);
+}
+
+.schedule.snap-section {
+  box-shadow: inset 0 20px 40px -15px rgba(83, 66, 47, 0.15);
+}
+
+.footer.snap-section {
+  box-shadow: inset 0 20px 40px -15px rgba(0, 0, 0, 0.2);
 }
 
 .hero.snap-section {
@@ -880,28 +934,18 @@
 
 @media (max-width: 768px) {
   .dot-nav {
-    right: 10px;
-    gap: 14px;
-  }
-
-  .dot-nav-dot {
-    width: 8px;
-    height: 8px;
-  }
-
-  .dot-nav-label {
     display: none;
   }
 
   .snap-section {
-    height: 100vh;
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
   }
 
-  .snap-section::-webkit-scrollbar {
-    display: none;
+  .hero.snap-section {
+    height: 100vh;
+    height: 100dvh;
   }
 
   .navbar-links {

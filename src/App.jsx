@@ -23,12 +23,12 @@ function useFadeIn(threshold = 0.15) {
   return ref
 }
 
-/* ===== FULL-PAGE SCROLL HOOK ===== */
+/* ===== FULL-PAGE SCROLL HOOK (desktop only) ===== */
 function useFullPageScroll() {
   const isScrolling = useRef(false)
   const currentSection = useRef(0)
-  const touchStartY = useRef(0)
-  const touchStartX = useRef(0)
+
+  const isTouchDevice = () => window.matchMedia('(pointer: coarse)').matches
 
   const getSections = useCallback(() => {
     return document.querySelectorAll('.snap-section')
@@ -62,6 +62,8 @@ function useFullPageScroll() {
   }, [getSections])
 
   useEffect(() => {
+    if (isTouchDevice()) return
+
     const handleWheel = (e) => {
       e.preventDefault()
       if (isScrolling.current) return
@@ -70,27 +72,6 @@ function useFullPageScroll() {
         scrollToSection(cur + 1)
       } else {
         scrollToSection(cur - 1)
-      }
-    }
-
-    const handleTouchStart = (e) => {
-      touchStartY.current = e.touches[0].clientY
-      touchStartX.current = e.touches[0].clientX
-    }
-
-    const handleTouchEnd = (e) => {
-      if (isScrolling.current) return
-      const diffY = touchStartY.current - e.changedTouches[0].clientY
-      const diffX = touchStartX.current - e.changedTouches[0].clientX
-      // Ignore horizontal swipes (for carousels)
-      if (Math.abs(diffX) > Math.abs(diffY)) return
-      const cur = findCurrentSection()
-      if (Math.abs(diffY) > 50) {
-        if (diffY > 0) {
-          scrollToSection(cur + 1)
-        } else {
-          scrollToSection(cur - 1)
-        }
       }
     }
 
@@ -107,14 +88,10 @@ function useFullPageScroll() {
     }
 
     window.addEventListener('wheel', handleWheel, { passive: false })
-    window.addEventListener('touchstart', handleTouchStart, { passive: true })
-    window.addEventListener('touchend', handleTouchEnd, { passive: true })
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
       window.removeEventListener('wheel', handleWheel)
-      window.removeEventListener('touchstart', handleTouchStart)
-      window.removeEventListener('touchend', handleTouchEnd)
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [findCurrentSection, scrollToSection])
