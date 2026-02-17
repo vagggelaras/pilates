@@ -791,7 +791,7 @@
 }
 
 .hero.snap-section::after {
-  background: linear-gradient(to bottom, transparent, rgba(250, 248, 243, 0.5));
+  display: none;
 }
 
 .intro.snap-section::after {
@@ -815,20 +815,21 @@
   z-index: 5;
 }
 
-.testimonials.snap-section {
-  box-shadow: inset 0 20px 40px -15px rgba(61, 53, 40, 0.3);
+
+.intro.snap-section {
+  box-shadow: 0 20px 30px -10px rgba(61, 53, 40, 0.1);
 }
 
 .services.snap-section {
-  box-shadow: inset 0 20px 30px -15px rgba(61, 53, 40, 0.08);
+  box-shadow: 0 20px 40px -10px rgba(61, 53, 40, 0.15);
+}
+
+.testimonials.snap-section {
+  box-shadow: 0 20px 40px -10px rgba(83, 66, 47, 0.3);
 }
 
 .schedule.snap-section {
-  box-shadow: inset 0 20px 40px -15px rgba(83, 66, 47, 0.15);
-}
-
-.footer.snap-section {
-  box-shadow: inset 0 20px 40px -15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 40px -10px rgba(61, 53, 40, 0.12);
 }
 
 .hero.snap-section {
@@ -937,14 +938,15 @@
   }
 
   .snap-section {
-    height: auto;
-    min-height: 0;
-    overflow: visible;
-  }
-
-  .hero.snap-section {
     height: 100vh;
     height: 100dvh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .snap-section::-webkit-scrollbar {
+    display: none;
   }
 
   .navbar-links {
