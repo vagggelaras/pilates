@@ -452,6 +452,13 @@
   line-height: 1.8;
 }
 
+/* ===== MOBILE CAROUSELS (hidden on desktop) ===== */
+.services-carousel,
+.testimonials-carousel,
+.schedule-carousel {
+  display: none;
+}
+
 /* ===== TESTIMONIALS ===== */
 .testimonials {
   padding: 3rem 1.5rem;
@@ -955,32 +962,142 @@
   }
 
   .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.7rem;
-  }
-
-  .services-grid .service-card {
-    padding: 1rem 0.6rem;
-  }
-
-  .services-grid .service-card .service-icon {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 0.5rem;
-  }
-
-  .services-grid .service-card h3 {
-    font-size: 0.85rem;
-    margin-bottom: 0;
-  }
-
-  .services-grid .service-card p {
     display: none;
   }
 
+  .services-carousel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-card {
+    flex: 1;
+    min-width: 0;
+    background: var(--color-white);
+    border-radius: 8px;
+    padding: 1.5rem 1.2rem;
+    text-align: center;
+    border: 1px solid rgba(221, 213, 200, 0.6);
+    box-shadow: 0 4px 20px rgba(107, 84, 57, 0.06);
+  }
+
+  .carousel-card .service-icon {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-cream) 0%, var(--color-cream-dark) 100%);
+    border-radius: 50%;
+    color: var(--color-green-dark);
+  }
+
+  .carousel-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--color-brown-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .carousel-card p {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .carousel-arrow {
+    background: var(--color-white);
+    border: 1px solid rgba(221, 213, 200, 0.6);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--color-brown);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(107, 84, 57, 0.08);
+  }
+
+  .carousel-arrow:active {
+    background: var(--color-cream);
+    transform: scale(0.95);
+  }
+
+  .carousel-arrow-left {
+    margin-right: 0.6rem;
+  }
+
+  .carousel-arrow-right {
+    margin-left: 0.6rem;
+  }
+
+  .carousel-dots {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-border);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .carousel-dot.active {
+    background: var(--color-green);
+    transform: scale(1.3);
+  }
+
   .testimonials-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    display: none;
+  }
+
+  .testimonials-carousel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .testimonials-carousel .carousel-arrow {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: var(--color-cream);
+  }
+
+  .testimonials-carousel .carousel-arrow:active {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .testimonial-carousel-card {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.07) !important;
+  }
+
+  .testimonials-carousel .carousel-dot {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .testimonials-carousel .carousel-dot.active {
+    background: var(--color-green-light);
+  }
+
+  .testimonials .section-subtitle {
+    display: none;
   }
 
   .footer-inner {
@@ -1013,15 +1130,33 @@
     display: none;
   }
 
-  /* Schedule: table -> cards */
+  /* Schedule: table -> carousel */
   .schedule-desktop {
     display: none;
   }
 
-  .schedule-mobile {
+  .schedule-carousel {
     display: flex;
-    flex-direction: column;
-    gap: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .schedule-carousel-card {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+
+  .schedule-carousel-card .schedule-day-title {
+    margin: 0;
+  }
+
+  .schedule-carousel-card .schedule-day-item {
+    padding: 0.7rem 1.2rem;
+  }
+
+  .schedule .section-subtitle {
+    display: none;
   }
 
   :root {

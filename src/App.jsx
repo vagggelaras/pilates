@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Menu, X, Flower2, Users, Dumbbell, Baby, Heart, Clock, Phone, Mail, MapPin } from 'lucide-react'
+import { Menu, X, Flower2, Users, Dumbbell, Baby, Heart, Clock, Phone, Mail, MapPin, ChevronLeft, ChevronRight } from 'lucide-react'
 import './App.css'
 
 /* ===== FADE-IN HOOK ===== */
@@ -273,6 +273,38 @@ function ServiceCard({ service, index }) {
   )
 }
 
+function ServicesMobileCarousel() {
+  const [current, setCurrent] = useState(0)
+  const prev = () => setCurrent((c) => (c === 0 ? services.length - 1 : c - 1))
+  const next = () => setCurrent((c) => (c === services.length - 1 ? 0 : c + 1))
+  const s = services[current]
+
+  return (
+    <div className="services-carousel">
+      <button className="carousel-arrow carousel-arrow-left" onClick={prev}>
+        <ChevronLeft size={22} />
+      </button>
+      <div className="carousel-card">
+        <div className="service-icon">{s.icon}</div>
+        <h3>{s.title}</h3>
+        <p>{s.desc}</p>
+      </div>
+      <button className="carousel-arrow carousel-arrow-right" onClick={next}>
+        <ChevronRight size={22} />
+      </button>
+      <div className="carousel-dots">
+        {services.map((_, i) => (
+          <button
+            key={i}
+            className={`carousel-dot ${current === i ? 'active' : ''}`}
+            onClick={() => setCurrent(i)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function Services() {
   const titleRef = useFadeIn()
   return (
@@ -290,6 +322,7 @@ function Services() {
             <ServiceCard key={i} service={s} index={i} />
           ))}
         </div>
+        <ServicesMobileCarousel />
       </div>
     </section>
   )
@@ -305,6 +338,39 @@ function TestimonialCard({ testimonial, index }) {
       </div>
       <p className="testimonial-text">{testimonial.text}</p>
       <p className="testimonial-author">{testimonial.author}</p>
+    </div>
+  )
+}
+
+function TestimonialsMobileCarousel() {
+  const [current, setCurrent] = useState(0)
+  const prev = () => setCurrent((c) => (c === 0 ? testimonials.length - 1 : c - 1))
+  const next = () => setCurrent((c) => (c === testimonials.length - 1 ? 0 : c + 1))
+  const t = testimonials[current]
+
+  return (
+    <div className="testimonials-carousel">
+      <button className="carousel-arrow carousel-arrow-left" onClick={prev}>
+        <ChevronLeft size={22} />
+      </button>
+      <div className="carousel-card testimonial-carousel-card">
+        <span className="testimonial-quote-icon">&ldquo;</span>
+        <div className="testimonial-stars">{'★'.repeat(t.stars)}</div>
+        <p className="testimonial-text">{t.text}</p>
+        <p className="testimonial-author">{t.author}</p>
+      </div>
+      <button className="carousel-arrow carousel-arrow-left" onClick={next}>
+        <ChevronRight size={22} />
+      </button>
+      <div className="carousel-dots">
+        {testimonials.map((_, i) => (
+          <button
+            key={i}
+            className={`carousel-dot ${current === i ? 'active' : ''}`}
+            onClick={() => setCurrent(i)}
+          />
+        ))}
+      </div>
     </div>
   )
 }
@@ -326,15 +392,57 @@ function Testimonials() {
             <TestimonialCard key={i} testimonial={t} index={i} />
           ))}
         </div>
+        <TestimonialsMobileCarousel />
       </div>
     </section>
   )
 }
 
+const scheduleDays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+const dayLabels = { mon: 'Δευτέρα', tue: 'Τρίτη', wed: 'Τετάρτη', thu: 'Πέμπτη', fri: 'Παρασκευή', sat: 'Σάββατο' }
+const dayLabelsShort = { mon: 'Δευ', tue: 'Τρι', wed: 'Τετ', thu: 'Πεμ', fri: 'Παρ', sat: 'Σαβ' }
+
+function ScheduleMobileCarousel() {
+  const activeDays = scheduleDays.filter(d => schedule.some(row => row[d] !== '—'))
+  const [current, setCurrent] = useState(0)
+  const prev = () => setCurrent((c) => (c === 0 ? activeDays.length - 1 : c - 1))
+  const next = () => setCurrent((c) => (c === activeDays.length - 1 ? 0 : c + 1))
+  const d = activeDays[current]
+  const classes = schedule.filter(row => row[d] !== '—')
+
+  return (
+    <div className="schedule-carousel">
+      <button className="carousel-arrow carousel-arrow-left" onClick={prev}>
+        <ChevronLeft size={22} />
+      </button>
+      <div className="carousel-card schedule-carousel-card">
+        <h3 className="schedule-day-title">{dayLabels[d]}</h3>
+        <div className="schedule-day-classes">
+          {classes.map((row, i) => (
+            <div className="schedule-day-item" key={i}>
+              <span className="schedule-day-time">{row.time}</span>
+              <span className="schedule-day-name">{row[d]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <button className="carousel-arrow carousel-arrow-right" onClick={next}>
+        <ChevronRight size={22} />
+      </button>
+      <div className="carousel-dots">
+        {activeDays.map((_, i) => (
+          <button
+            key={i}
+            className={`carousel-dot ${current === i ? 'active' : ''}`}
+            onClick={() => setCurrent(i)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function Schedule() {
-  const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-  const dayLabels = { mon: 'Δευτέρα', tue: 'Τρίτη', wed: 'Τετάρτη', thu: 'Πέμπτη', fri: 'Παρασκευή', sat: 'Σάββατο' }
-  const dayLabelsShort = { mon: 'Δευ', tue: 'Τρι', wed: 'Τετ', thu: 'Πεμ', fri: 'Παρ', sat: 'Σαβ' }
   const titleRef = useFadeIn()
   const tableRef = useFadeIn()
 
@@ -355,14 +463,14 @@ function Schedule() {
               <thead>
                 <tr>
                   <th>Ώρα</th>
-                  {days.map(d => <th key={d}>{dayLabelsShort[d]}</th>)}
+                  {scheduleDays.map(d => <th key={d}>{dayLabelsShort[d]}</th>)}
                 </tr>
               </thead>
               <tbody>
                 {schedule.map((row, i) => (
                   <tr key={i}>
                     <td><strong>{row.time}</strong></td>
-                    {days.map(d => (
+                    {scheduleDays.map(d => (
                       <td key={d} className={row[d] === '—' ? 'no-class' : 'has-class'}>
                         {row[d]}
                       </td>
@@ -372,26 +480,8 @@ function Schedule() {
               </tbody>
             </table>
           </div>
-          {/* Mobile cards */}
-          <div className="schedule-mobile">
-            {days.map(d => {
-              const classes = schedule.filter(row => row[d] !== '—')
-              if (classes.length === 0) return null
-              return (
-                <div className="schedule-day-card" key={d}>
-                  <h3 className="schedule-day-title">{dayLabels[d]}</h3>
-                  <div className="schedule-day-classes">
-                    {classes.map((row, i) => (
-                      <div className="schedule-day-item" key={i}>
-                        <span className="schedule-day-time">{row.time}</span>
-                        <span className="schedule-day-name">{row[d]}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+          {/* Mobile carousel */}
+          <ScheduleMobileCarousel />
           <p className="schedule-trainer">
             Όλα τα μαθήματα με τη γυμνάστρια <strong>Αγγελική</strong>
           </p>
