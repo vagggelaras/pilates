@@ -28,6 +28,7 @@ function useFullPageScroll() {
   const isScrolling = useRef(false)
   const currentSection = useRef(0)
   const touchStartY = useRef(0)
+  const touchStartX = useRef(0)
 
   const getSections = useCallback(() => {
     return document.querySelectorAll('.snap-section')
@@ -74,14 +75,18 @@ function useFullPageScroll() {
 
     const handleTouchStart = (e) => {
       touchStartY.current = e.touches[0].clientY
+      touchStartX.current = e.touches[0].clientX
     }
 
     const handleTouchEnd = (e) => {
       if (isScrolling.current) return
-      const diff = touchStartY.current - e.changedTouches[0].clientY
+      const diffY = touchStartY.current - e.changedTouches[0].clientY
+      const diffX = touchStartX.current - e.changedTouches[0].clientX
+      // Ignore horizontal swipes (for carousels)
+      if (Math.abs(diffX) > Math.abs(diffY)) return
       const cur = findCurrentSection()
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) {
+      if (Math.abs(diffY) > 50) {
+        if (diffY > 0) {
           scrollToSection(cur + 1)
         } else {
           scrollToSection(cur - 1)
