@@ -287,7 +287,7 @@
 
 /* ===== INTRO / ABOUT ===== */
 .intro {
-  padding: 7rem 1.5rem;
+  padding: 2rem 1.5rem;
   background: var(--color-cream-light);
   position: relative;
   overflow: hidden;
@@ -318,14 +318,14 @@
 }
 
 .intro-inner {
-  max-width: 700px;
+  max-width: 750px;
   margin: 0 auto;
   text-align: center;
   position: relative;
 }
 
 .intro-title {
-  font-size: 3rem;
+  font-size: 2.6rem;
   margin-bottom: 1.5rem;
   letter-spacing: -0.5px;
 }
@@ -333,8 +333,9 @@
 .intro-text {
   font-size: 1.05rem;
   color: var(--color-text-light);
-  line-height: 2;
-  margin-bottom: 1.2rem;
+  line-height: 1.9;
+  margin-bottom: 1rem;
+  font-weight: 300;
 }
 
 .intro-signature {
@@ -342,7 +343,7 @@
   font-style: italic;
   font-size: 1.4rem;
   color: var(--color-brown);
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
   position: relative;
   display: inline-block;
 }
@@ -369,7 +370,7 @@
 
 /* ===== SERVICES ===== */
 .services {
-  padding: var(--section-padding);
+  padding: 3rem 1.5rem;
   background: var(--color-cream);
   position: relative;
 }
@@ -385,7 +386,7 @@
 .service-card {
   background: var(--color-white);
   border-radius: 6px;
-  padding: 2.8rem 2rem 2.5rem;
+  padding: 1.8rem 1.5rem 1.5rem;
   text-align: center;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(221, 213, 200, 0.6);
@@ -453,7 +454,7 @@
 
 /* ===== TESTIMONIALS ===== */
 .testimonials {
-  padding: var(--section-padding);
+  padding: 3rem 1.5rem;
   background: linear-gradient(170deg, var(--color-brown-dark) 0%, #53422f 100%);
   color: var(--color-cream);
   position: relative;
@@ -550,7 +551,7 @@
 
 /* ===== SCHEDULE ===== */
 .schedule {
-  padding: var(--section-padding);
+  padding: 3rem 1.5rem;
   background: var(--color-cream-light);
   position: relative;
 }
@@ -760,6 +761,110 @@
   letter-spacing: 0.5px;
 }
 
+/* ===== SNAP SECTIONS ===== */
+.snap-section {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero.snap-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* All sections after hero sit below the fixed navbar */
+.snap-section:not(.hero) {
+  padding-top: 70px;
+  box-sizing: border-box;
+}
+
+.services.snap-section,
+.schedule.snap-section {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.services.snap-section::-webkit-scrollbar,
+.schedule.snap-section::-webkit-scrollbar {
+  display: none;
+}
+
+.footer.snap-section {
+  height: auto;
+  overflow: visible;
+}
+
+/* ===== DOT NAVIGATION ===== */
+.dot-nav {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: flex-end;
+}
+
+.dot-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-direction: row-reverse;
+}
+
+.dot-nav-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(107, 84, 57, 0.25);
+  border: 1.5px solid rgba(107, 84, 57, 0.4);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.dot-nav-item.active .dot-nav-dot {
+  background: var(--color-green);
+  border-color: var(--color-green);
+  transform: scale(1.3);
+  box-shadow: 0 0 10px rgba(122, 139, 111, 0.4);
+}
+
+.dot-nav-item:hover .dot-nav-dot {
+  background: var(--color-brown);
+  border-color: var(--color-brown);
+  transform: scale(1.2);
+}
+
+.dot-nav-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(8px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.dot-nav-item:hover .dot-nav-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
   .services-grid,
@@ -769,6 +874,31 @@
 }
 
 @media (max-width: 768px) {
+  .dot-nav {
+    right: 10px;
+    gap: 14px;
+  }
+
+  .dot-nav-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .dot-nav-label {
+    display: none;
+  }
+
+  .snap-section {
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .snap-section::-webkit-scrollbar {
+    display: none;
+  }
+
   .navbar-links {
     display: none;
     position: absolute;
@@ -825,12 +955,24 @@
     gap: 2rem;
   }
 
+  .snap-section:not(.hero) {
+    padding-top: 60px;
+  }
+
   .intro-title {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
 
   .section-title {
     font-size: 2.2rem;
+  }
+
+  .intro-text {
+    font-size: 0.95rem;
+  }
+
+  .intro-signature {
+    font-size: 1.2rem;
   }
 
   .intro-signature::before,
@@ -874,5 +1016,13 @@
 
   .intro-title {
     font-size: 1.8rem;
+  }
+
+  .intro-text {
+    font-size: 0.9rem;
+  }
+
+  .intro-signature {
+    font-size: 1.1rem;
   }
 }

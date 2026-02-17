@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Menu, X, Flower2, Users, Dumbbell, Baby, Heart, Clock, Phone, Mail, MapPin } from 'lucide-react'
 import './App.css'
 
@@ -21,6 +21,100 @@ function useFadeIn(threshold = 0.15) {
     return () => observer.disconnect()
   }, [threshold])
   return ref
+}
+
+/* ===== FULL-PAGE SCROLL HOOK ===== */
+function useFullPageScroll() {
+  const isScrolling = useRef(false)
+  const currentSection = useRef(0)
+  const touchStartY = useRef(0)
+
+  const getSections = useCallback(() => {
+    return document.querySelectorAll('.snap-section')
+  }, [])
+
+  const scrollToSection = useCallback((index) => {
+    const sections = getSections()
+    if (index < 0 || index >= sections.length || isScrolling.current) return
+    isScrolling.current = true
+    currentSection.current = index
+    sections[index].scrollIntoView({ behavior: 'smooth' })
+    setTimeout(() => {
+      isScrolling.current = false
+    }, 900)
+  }, [getSections])
+
+  const findCurrentSection = useCallback(() => {
+    const sections = getSections()
+    const scrollY = window.scrollY
+    const viewportH = window.innerHeight
+    let closest = 0
+    let minDist = Infinity
+    sections.forEach((sec, i) => {
+      const dist = Math.abs(sec.offsetTop - scrollY - viewportH * 0.3)
+      if (dist < minDist) {
+        minDist = dist
+        closest = i
+      }
+    })
+    return closest
+  }, [getSections])
+
+  useEffect(() => {
+    const handleWheel = (e) => {
+      e.preventDefault()
+      if (isScrolling.current) return
+      const cur = findCurrentSection()
+      if (e.deltaY > 0) {
+        scrollToSection(cur + 1)
+      } else {
+        scrollToSection(cur - 1)
+      }
+    }
+
+    const handleTouchStart = (e) => {
+      touchStartY.current = e.touches[0].clientY
+    }
+
+    const handleTouchEnd = (e) => {
+      if (isScrolling.current) return
+      const diff = touchStartY.current - e.changedTouches[0].clientY
+      const cur = findCurrentSection()
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          scrollToSection(cur + 1)
+        } else {
+          scrollToSection(cur - 1)
+        }
+      }
+    }
+
+    const handleKeyDown = (e) => {
+      if (isScrolling.current) return
+      const cur = findCurrentSection()
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault()
+        scrollToSection(cur + 1)
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault()
+        scrollToSection(cur - 1)
+      }
+    }
+
+    window.addEventListener('wheel', handleWheel, { passive: false })
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    window.addEventListener('touchend', handleTouchEnd, { passive: true })
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel)
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchend', handleTouchEnd)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [findCurrentSection, scrollToSection])
+
+  return { scrollToSection, findCurrentSection }
 }
 
 /* ===== DATA ===== */
@@ -59,7 +153,7 @@ const services = [
 
 const testimonials = [
   {
-    text: 'Μετά από χρόνια πόνους στη μέση, το Pilates στο SePilateVo μου άλλαξε τη ζωή. Η Ελένη είναι εξαιρετική!',
+    text: 'Μετά από χρόνια πόνους στη μέση, το Pilates στο SePilateVo μου άλλαξε τη ζωή. Η Αγγελική είναι εξαιρετική!',
     author: 'Μαρία Κ.',
     stars: 5,
   },
@@ -118,7 +212,7 @@ function Navbar() {
 
 function Hero() {
   return (
-    <section className="hero">
+    <section className="hero snap-section">
       <div className="hero-bg" />
       <div className="hero-decor-tl" />
       <div className="hero-decor-br" />
@@ -139,21 +233,25 @@ function Hero() {
 function Intro() {
   const ref = useFadeIn()
   return (
-    <section className="intro" id="intro">
+    <section className="intro snap-section" id="intro">
       <div className="intro-inner fade-in" ref={ref}>
         <div className="section-divider" />
         <h2 className="intro-title">Καλώς ήρθατε στο SePilateVo</h2>
         <p className="intro-text">
-          Στο SePilateVo πιστεύουμε ότι η άσκηση δεν είναι απλά κίνηση — είναι μια πράξη αγάπης
-          προς τον εαυτό μας. Το studio μας δημιουργήθηκε με όραμα να προσφέρει ένα ζεστό,
-          φιλόξενο χώρο όπου κάθε άνθρωπος μπορεί να ανακαλύψει τη δύναμη του σώματός του.
+          Στο SePilateVo πιστεύουμε ότι η άσκηση δεν είναι απλά μια κίνηση- είναι μια πράξη αγάπης
+          προς τον εαυτό μας. Μέσα απο το πιλάτες προτρέπουμε σε μια ασταμάτητη διάθεση για
+          θετικές σκέψεις που προέρχονται απο την κίνηση. Μέσα σε ένα ζεστό φιλόξενο χώρο
+          εχουμε την τύχη μαζί σε όλη τη διάρκεια της χρονιάς να βλέπουμε μικρά θαύματα να
+          συμβαίνουν κάθε μέρα. Αναγνωρίζουμε ότι υπάρχει ένας μόνο λόγος που συμβαίνει αυτό
+          και είναι ότι φτάνουμε όλες στο σημείο να πιστέψουμε ότι μπορούμε με το μυαλό μας
+          μπορούμε να κυριαρχήσουμε στο σώμα μας.
         </p>
         <p className="intro-text">
-          Μέσα από εξατομικευμένα προγράμματα Pilates, συνδυάζουμε τη σωστή τεχνική με τη
-          συνειδητή αναπνοή, βοηθώντας σας να χτίσετε δύναμη, ευλυγισία και ισορροπία —
-          τόσο στο σώμα όσο και στο μυαλό.
+          Στο sepilatevo θα δίνουμε πάντα ένα συνεχή θετικό βομβαρδισμό επιτυχίας για να
+          καταφέρνετε να πιστέψετε στην θετική τροφοδότηση απο τον ίδιο σας τον εαυτό.
+          Σταματήστε να προδίδετε τις δυνάμεις σας και αφοσιωθείτε σε αυτές.
         </p>
-        <p className="intro-signature">Ελένη, η γυμνάστριά σας</p>
+        <p className="intro-signature">Αγγελική,  pilates instructor</p>
       </div>
     </section>
   )
@@ -173,7 +271,7 @@ function ServiceCard({ service, index }) {
 function Services() {
   const titleRef = useFadeIn()
   return (
-    <section className="services" id="services">
+    <section className="services snap-section" id="services">
       <div className="container">
         <div className="fade-in" ref={titleRef}>
           <div className="section-divider" />
@@ -209,7 +307,7 @@ function TestimonialCard({ testimonial, index }) {
 function Testimonials() {
   const titleRef = useFadeIn()
   return (
-    <section className="testimonials" id="testimonials">
+    <section className="testimonials snap-section" id="testimonials">
       <div className="container">
         <div className="fade-in" ref={titleRef}>
           <div className="section-divider" />
@@ -236,7 +334,7 @@ function Schedule() {
   const tableRef = useFadeIn()
 
   return (
-    <section className="schedule" id="schedule">
+    <section className="schedule snap-section" id="schedule">
       <div className="container">
         <div className="fade-in" ref={titleRef}>
           <div className="section-divider" />
@@ -290,7 +388,7 @@ function Schedule() {
             })}
           </div>
           <p className="schedule-trainer">
-            Όλα τα μαθήματα με τη γυμνάστρια <strong>Ελένη</strong>
+            Όλα τα μαθήματα με τη γυμνάστρια <strong>Αγγελική</strong>
           </p>
         </div>
       </div>
@@ -300,7 +398,7 @@ function Schedule() {
 
 function Footer() {
   return (
-    <footer className="footer" id="contact">
+    <footer className="footer snap-section" id="contact">
       <div className="footer-inner">
         <div className="footer-col">
           <h4>SePilateVo</h4>
@@ -329,8 +427,50 @@ function Footer() {
   )
 }
 
+/* ===== SECTION DOT NAV ===== */
+const sectionNames = ['Αρχική', 'Σχετικά', 'Υπηρεσίες', 'Κριτικές', 'Πρόγραμμα', 'Επικοινωνία']
+
+function DotNav({ scrollToSection }) {
+  const [active, setActive] = useState(0)
+
+  useEffect(() => {
+    const sections = document.querySelectorAll('.snap-section')
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Array.from(sections).indexOf(entry.target)
+            if (index !== -1) setActive(index)
+          }
+        })
+      },
+      { threshold: 0.45 }
+    )
+    sections.forEach((sec) => observer.observe(sec))
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div className="dot-nav">
+      {sectionNames.map((name, i) => (
+        <button
+          key={i}
+          className={`dot-nav-item ${active === i ? 'active' : ''}`}
+          onClick={() => scrollToSection(i)}
+          title={name}
+        >
+          <span className="dot-nav-dot" />
+          <span className="dot-nav-label">{name}</span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
 /* ===== APP ===== */
 function App() {
+  const { scrollToSection } = useFullPageScroll()
+
   return (
     <>
       <Navbar />
@@ -340,6 +480,7 @@ function App() {
       <Testimonials />
       <Schedule />
       <Footer />
+      <DotNav scrollToSection={scrollToSection} />
     </>
   )
 }
