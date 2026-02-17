@@ -317,7 +317,7 @@
 }
 
 .intro-inner {
-  max-width: 750px;
+  max-width: 100%;
   margin: 0 auto;
   text-align: center;
   position: relative;
@@ -817,6 +817,8 @@
 
 
 .intro.snap-section {
+  height: auto;
+  overflow: visible;
   box-shadow: 0 20px 30px -10px rgba(61, 53, 40, 0.1);
 }
 
@@ -1152,6 +1154,26 @@
 
   .snap-section:not(.hero) {
     padding-top: 60px;
+  }
+
+  .container {
+    padding: 0 0.8rem;
+  }
+
+  .intro {
+    padding: 2rem 0.8rem;
+  }
+
+  .services {
+    padding: 1rem 0.5rem;
+  }
+
+  .testimonials {
+    padding: 2rem 0.5rem;
+  }
+
+  .schedule {
+    padding: 2rem 0.5rem;
   }
 
   .intro-title {
