@@ -75,14 +75,6 @@ const testimonials = [
   },
 ]
 
-const schedule = [
-  { time: '09:00 - 10:00', mon: 'Mat Pilates', tue: '—', wed: 'Mat Pilates', thu: '—', fri: 'Mat Pilates', sat: 'Mat Pilates' },
-  { time: '10:00 - 11:00', mon: 'Reformer', tue: 'Reformer', wed: '—', thu: 'Reformer', fri: '—', sat: 'Group Session' },
-  { time: '11:00 - 12:00', mon: 'Prenatal', tue: '—', wed: 'Recovery', thu: '—', fri: 'Prenatal', sat: '—' },
-  { time: '17:00 - 18:00', mon: 'Reformer', tue: 'Mat Pilates', wed: 'Reformer', thu: 'Mat Pilates', fri: 'Reformer', sat: '—' },
-  { time: '18:00 - 19:00', mon: 'Group Session', tue: 'Reformer', wed: 'Group Session', thu: 'Reformer', fri: 'Group Session', sat: '—' },
-  { time: '19:00 - 20:00', mon: 'Personal', tue: 'Group Session', wed: 'Personal', thu: 'Group Session', fri: '—', sat: '—' },
-]
 
 /* ===== COMPONENTS ===== */
 
@@ -299,93 +291,53 @@ function Testimonials() {
   )
 }
 
-const scheduleDays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-const dayLabels = { mon: 'Δευτέρα', tue: 'Τρίτη', wed: 'Τετάρτη', thu: 'Πέμπτη', fri: 'Παρασκευή', sat: 'Σάββατο' }
-const dayLabelsShort = { mon: 'Δευ', tue: 'Τρι', wed: 'Τετ', thu: 'Πεμ', fri: 'Παρ', sat: 'Σαβ' }
-
-function ScheduleMobileCarousel() {
-  const activeDays = scheduleDays.filter(d => schedule.some(row => row[d] !== '—'))
-  const [current, setCurrent] = useState(0)
-  const prev = () => setCurrent((c) => (c === 0 ? activeDays.length - 1 : c - 1))
-  const next = () => setCurrent((c) => (c === activeDays.length - 1 ? 0 : c + 1))
-  const d = activeDays[current]
-  const classes = schedule.filter(row => row[d] !== '—')
-
-  return (
-    <div className="schedule-carousel">
-      <button className="carousel-arrow carousel-arrow-left" onClick={prev}>
-        <ChevronLeft size={22} />
-      </button>
-      <div className="carousel-card schedule-carousel-card">
-        <h3 className="schedule-day-title">{dayLabels[d]}</h3>
-        <div className="schedule-day-classes">
-          {classes.map((row, i) => (
-            <div className="schedule-day-item" key={i}>
-              <span className="schedule-day-time">{row.time}</span>
-              <span className="schedule-day-name">{row[d]}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <button className="carousel-arrow carousel-arrow-right" onClick={next}>
-        <ChevronRight size={22} />
-      </button>
-      <div className="carousel-dots">
-        {activeDays.map((_, i) => (
-          <button
-            key={i}
-            className={`carousel-dot ${current === i ? 'active' : ''}`}
-            onClick={() => setCurrent(i)}
-          />
-        ))}
-      </div>
-    </div>
-  )
-}
-
 function Schedule() {
   const titleRef = useFadeIn()
-  const tableRef = useFadeIn()
+  const contentRef = useFadeIn()
 
   return (
     <section className="schedule snap-section" id="schedule">
       <div className="container">
         <div className="fade-in" ref={titleRef}>
           <div className="section-divider" />
-          <h2 className="section-title">Εβδομαδιαίο Πρόγραμμα</h2>
+          <h2 className="section-title">Ωράριο & Κρατήσεις</h2>
           <p className="section-subtitle">
-            Βρείτε το μάθημα που σας ταιριάζει και κλείστε τη θέση σας
+            Κλείστε τη θέση σας σε οποιοδήποτε μάθημα εντός του ωραρίου μας
           </p>
         </div>
-        <div className="fade-in" ref={tableRef}>
-          {/* Desktop table */}
-          <div className="schedule-table-wrapper schedule-desktop">
-            <table className="schedule-table">
-              <thead>
-                <tr>
-                  <th>Ώρα</th>
-                  {scheduleDays.map(d => <th key={d}>{dayLabelsShort[d]}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {schedule.map((row, i) => (
-                  <tr key={i}>
-                    <td><strong>{row.time}</strong></td>
-                    {scheduleDays.map(d => (
-                      <td key={d} className={row[d] === '—' ? 'no-class' : 'has-class'}>
-                        {row[d]}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="fade-in" ref={contentRef}>
+          <div className="schedule-info">
+            <div className="schedule-hours-card">
+              <div className="schedule-hours-icon">
+                <Clock size={28} />
+              </div>
+              <h3>Ωράριο Λειτουργίας</h3>
+              <div className="schedule-hours-list">
+                <div className="schedule-hours-row">
+                  <span className="schedule-hours-days">Δευτέρα – Παρασκευή</span>
+                  <span className="schedule-hours-time">09:00 – 21:00</span>
+                </div>
+                <div className="schedule-hours-row">
+                  <span className="schedule-hours-days">Σάββατο</span>
+                  <span className="schedule-hours-time">09:00 – 14:00</span>
+                </div>
+                <div className="schedule-hours-row closed">
+                  <span className="schedule-hours-days">Κυριακή</span>
+                  <span className="schedule-hours-time">Κλειστά</span>
+                </div>
+              </div>
+            </div>
+            <div className="schedule-booking-card">
+              <p className="schedule-booking-text">
+                Όλα τα μαθήματα πραγματοποιούνται με τη γυμνάστρια
+              </p>
+              <p className="schedule-trainer-name">Αγγελική</p>
+              <p className="schedule-booking-desc">
+                Επικοινωνήστε μαζί μας για να κλείσετε θέση στο μάθημα που σας ενδιαφέρει
+              </p>
+              <a href="#contact" className="btn btn-primary">Επικοινωνία</a>
+            </div>
           </div>
-          {/* Mobile carousel */}
-          <ScheduleMobileCarousel />
-          <p className="schedule-trainer">
-            Όλα τα μαθήματα με τη γυμνάστρια <strong>Αγγελική</strong>
-          </p>
         </div>
       </div>
     </section>
@@ -394,7 +346,7 @@ function Schedule() {
 
 function Footer() {
   return (
-    <footer className="footer snap-section" id="contact">
+    <footer className="footer" id="contact">
       <div className="footer-inner">
         <div className="footer-col">
           <h4>SePilateVo</h4>

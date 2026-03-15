@@ -453,8 +453,7 @@
 
 /* ===== MOBILE CAROUSELS (hidden on desktop) ===== */
 .services-carousel,
-.testimonials-carousel,
-.schedule-carousel {
+.testimonials-carousel {
   display: none;
 }
 
@@ -562,142 +561,110 @@
   position: relative;
 }
 
-.schedule-table-wrapper {
-  max-width: var(--container-max);
+.schedule-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 800px;
   margin: 0 auto;
-  overflow-x: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 30px rgba(107, 84, 57, 0.06);
+  align-items: stretch;
 }
 
-.schedule-table {
-  width: 100%;
-  border-collapse: collapse;
+.schedule-hours-card,
+.schedule-booking-card {
   background: var(--color-white);
-  overflow: hidden;
-}
-
-.schedule-table thead {
-  background: linear-gradient(135deg, var(--color-brown) 0%, var(--color-brown-dark) 100%);
-  color: var(--color-white);
-}
-
-.schedule-table th {
-  padding: 1.1rem 1.2rem;
-  font-family: var(--font-body);
-  font-weight: 300;
-  font-size: 0.78rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.schedule-table th:first-child {
-  background: var(--color-brown-dark);
-}
-
-.schedule-table td {
-  padding: 1.1rem 1.2rem;
-  text-align: center;
-  font-size: 0.88rem;
-  border-bottom: 1px solid rgba(221, 213, 200, 0.5);
-  color: var(--color-text-light);
-  transition: var(--transition);
-}
-
-.schedule-table td:first-child {
-  background: var(--color-cream-dark);
-  color: var(--color-brown-dark);
-  font-size: 0.82rem;
-  letter-spacing: 0.5px;
-  border-right: 2px solid var(--color-brown-light);
-  text-align: left;
-  min-width: 130px;
-}
-
-.schedule-table tbody tr {
-  transition: var(--transition);
-}
-
-.schedule-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.schedule-table tbody tr:hover {
-  background: rgba(245, 240, 232, 0.6);
-}
-
-.schedule-table .has-class {
-  color: var(--color-green-dark);
-  font-weight: 400;
-  position: relative;
-}
-
-.schedule-table .no-class {
-  color: var(--color-border);
-}
-
-/* Mobile cards - hidden on desktop */
-.schedule-mobile {
-  display: none;
-}
-
-.schedule-day-card {
-  background: var(--color-white);
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  overflow: hidden;
+  border-radius: 10px;
+  padding: 2.5rem 2rem;
   border: 1px solid rgba(221, 213, 200, 0.5);
-  box-shadow: 0 2px 10px rgba(107, 84, 57, 0.04);
-}
-
-.schedule-day-title {
-  background: linear-gradient(135deg, var(--color-brown) 0%, var(--color-brown-dark) 100%);
-  color: var(--color-white);
-  padding: 0.8rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-.schedule-day-classes {
-  padding: 0.3rem 0;
-}
-
-.schedule-day-item {
+  box-shadow: 0 4px 30px rgba(107, 84, 57, 0.06);
   display: flex;
-  align-items: center;
-  padding: 0.8rem 1.2rem;
-  border-bottom: 1px solid rgba(221, 213, 200, 0.35);
+  flex-direction: column;
 }
 
-.schedule-day-item:last-child {
-  border-bottom: none;
-}
-
-.schedule-day-time {
-  font-size: 0.82rem;
+.schedule-hours-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
   color: var(--color-brown-dark);
-  font-weight: 700;
-  min-width: 115px;
-  letter-spacing: 0.3px;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
 }
 
-.schedule-day-name {
-  font-size: 0.9rem;
-  color: var(--color-green-dark);
+.schedule-hours-icon {
+  color: var(--color-green);
+  margin-bottom: 1rem;
 }
 
-.schedule-trainer {
-  text-align: center;
-  margin-top: 2.5rem;
-  color: var(--color-text-muted);
+.schedule-hours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.schedule-hours-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(221, 213, 200, 0.4);
+}
+
+.schedule-hours-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.schedule-hours-days {
   font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.schedule-hours-time {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-brown-dark);
   letter-spacing: 0.5px;
 }
 
-.schedule-trainer strong {
-  color: var(--color-brown);
-  font-weight: 700;
+.schedule-hours-row.closed .schedule-hours-time {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.schedule-booking-card {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(170deg, var(--color-brown-dark) 0%, #3a2d1f 100%);
+  color: var(--color-cream);
+  border: none;
+}
+
+.schedule-booking-text {
+  font-size: 0.9rem;
+  color: rgba(237, 230, 216, 0.7);
+  letter-spacing: 0.5px;
+}
+
+.schedule-trainer-name {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  color: var(--color-cream);
+  margin: 0.3rem 0 1.2rem;
+  font-weight: 400;
+}
+
+.schedule-booking-desc {
+  font-size: 0.85rem;
+  color: rgba(237, 230, 216, 0.55);
+  line-height: 1.7;
+  margin-bottom: 1.8rem;
+  max-width: 280px;
+}
+
+.schedule-booking-card .btn-primary {
+  background: var(--color-green);
+  color: var(--color-white);
+  border: none;
 }
 
 /* ===== FOOTER ===== */
@@ -846,15 +813,6 @@
   box-sizing: border-box;
 }
 
-.schedule.snap-section {
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.schedule.snap-section::-webkit-scrollbar {
-  display: none;
-}
 
 
 /* ===== DOT NAVIGATION ===== */
@@ -1137,6 +1095,10 @@
     display: none;
   }
 
+  .footer {
+    margin-top: 15%;
+  }
+
   .footer-inner {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -1187,33 +1149,8 @@
     display: none;
   }
 
-  /* Schedule: table -> carousel */
-  .schedule-desktop {
-    display: none;
-  }
-
-  .schedule-carousel {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .schedule-carousel-card {
-    padding: 0 !important;
-    overflow: hidden;
-  }
-
-  .schedule-carousel-card .schedule-day-title {
-    margin: 0;
-  }
-
-  .schedule-carousel-card .schedule-day-item {
-    padding: 0.7rem 1.2rem;
-  }
-
-  .schedule .section-subtitle {
-    display: none;
+  .schedule-info {
+    grid-template-columns: 1fr;
   }
 
   :root {
