@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
+import Lenis from 'lenis'
 import { Menu, X, Flower2, Users, Dumbbell, Baby, Heart, Clock, Phone, Mail, MapPin, ChevronLeft, ChevronRight } from 'lucide-react'
+import ShinyText from './reactBits/ShinyText'
+import ScrollFloat from './reactBits/scroll-float'
 import './App.css'
 
 /* ===== FADE-IN HOOK ===== */
@@ -116,8 +119,12 @@ function Hero() {
       <div className="hero-decor-br" />
       <div className="hero-content">
         <p className="hero-tagline">SePilateVo Studio</p>
-        <h1 className="hero-title">Κίνηση με Συνείδηση.</h1>
-        <p className="hero-title-sub">Δύναμη με Αρμονία.</p>
+        <h1 className="hero-title">
+          <ShinyText text="Κίνηση με Συνείδηση." color="#ffffff" shineColor="#f0d9b0" speed={4} />
+        </h1>
+        <p className="hero-title-sub">
+          <ShinyText text="Δύναμη με Αρμονία." color="rgba(237, 230, 216, 0.7)" shineColor="#ffffff" speed={4} delay={1} />
+        </p>
         <a href="#schedule" className="btn btn-primary">Κάνε Κράτηση</a>
       </div>
       <div className="hero-scroll-hint">
@@ -134,7 +141,11 @@ function Intro() {
     <section className="intro snap-section" id="intro">
       <div className="intro-inner fade-in" ref={ref}>
         <div className="section-divider" />
-        <h2 className="intro-title">Καλώς ήρθατε στο SePilateVo</h2>
+        <ScrollFloat 
+          containerClassName="intro-title" 
+          scrollStart="center bottom+=50%" 
+          scrollEnd="center bottom-=70%"
+        >Καλώς ήρθατε στο SePilateVo</ScrollFloat>
         <p className="intro-text">
           Στο SePilateVo πιστεύουμε ότι η άσκηση δεν είναι απλά μια κίνηση- είναι μια πράξη αγάπης
           προς τον εαυτό μας. Μέσα απο το πιλάτες προτρέπουμε σε μια ασταμάτητη διάθεση για
@@ -168,8 +179,21 @@ function ServiceCard({ service, index }) {
 
 function ServicesMobileCarousel() {
   const [current, setCurrent] = useState(0)
-  const prev = () => setCurrent((c) => (c === 0 ? services.length - 1 : c - 1))
-  const next = () => setCurrent((c) => (c === services.length - 1 ? 0 : c + 1))
+  const [dir, setDir] = useState('next')
+
+  const prev = () => {
+    setDir('prev')
+    setCurrent((c) => (c === 0 ? services.length - 1 : c - 1))
+  }
+  const next = () => {
+    setDir('next')
+    setCurrent((c) => (c === services.length - 1 ? 0 : c + 1))
+  }
+  const goTo = (i) => {
+    setDir(i > current ? 'next' : 'prev')
+    setCurrent(i)
+  }
+
   const s = services[current]
 
   return (
@@ -177,10 +201,12 @@ function ServicesMobileCarousel() {
       <button className="carousel-arrow carousel-arrow-left" onClick={prev}>
         <ChevronLeft size={22} />
       </button>
-      <div className="carousel-card">
-        <div className="service-icon">{s.icon}</div>
-        <h3>{s.title}</h3>
-        <p>{s.desc}</p>
+      <div className="carousel-track">
+        <div key={current} className={`carousel-card carousel-slide-${dir}`}>
+          <div className="service-icon">{s.icon}</div>
+          <h3>{s.title}</h3>
+          <p>{s.desc}</p>
+        </div>
       </div>
       <button className="carousel-arrow carousel-arrow-right" onClick={next}>
         <ChevronRight size={22} />
@@ -190,7 +216,7 @@ function ServicesMobileCarousel() {
           <button
             key={i}
             className={`carousel-dot ${current === i ? 'active' : ''}`}
-            onClick={() => setCurrent(i)}
+            onClick={() => goTo(i)}
           />
         ))}
       </div>
@@ -237,8 +263,21 @@ function TestimonialCard({ testimonial, index }) {
 
 function TestimonialsMobileCarousel() {
   const [current, setCurrent] = useState(0)
-  const prev = () => setCurrent((c) => (c === 0 ? testimonials.length - 1 : c - 1))
-  const next = () => setCurrent((c) => (c === testimonials.length - 1 ? 0 : c + 1))
+  const [dir, setDir] = useState('next')
+
+  const prev = () => {
+    setDir('prev')
+    setCurrent((c) => (c === 0 ? testimonials.length - 1 : c - 1))
+  }
+  const next = () => {
+    setDir('next')
+    setCurrent((c) => (c === testimonials.length - 1 ? 0 : c + 1))
+  }
+  const goTo = (i) => {
+    setDir(i > current ? 'next' : 'prev')
+    setCurrent(i)
+  }
+
   const t = testimonials[current]
 
   return (
@@ -246,13 +285,15 @@ function TestimonialsMobileCarousel() {
       <button className="carousel-arrow carousel-arrow-left" onClick={prev}>
         <ChevronLeft size={22} />
       </button>
-      <div className="carousel-card testimonial-carousel-card">
-        <span className="testimonial-quote-icon">&ldquo;</span>
-        <div className="testimonial-stars">{'★'.repeat(t.stars)}</div>
-        <p className="testimonial-text">{t.text}</p>
-        <p className="testimonial-author">{t.author}</p>
+      <div className="carousel-track">
+        <div key={current} className={`carousel-card testimonial-carousel-card carousel-slide-${dir}`}>
+          <span className="testimonial-quote-icon">&ldquo;</span>
+          <div className="testimonial-stars">{'★'.repeat(t.stars)}</div>
+          <p className="testimonial-text">{t.text}</p>
+          <p className="testimonial-author">{t.author}</p>
+        </div>
       </div>
-      <button className="carousel-arrow carousel-arrow-left" onClick={next}>
+      <button className="carousel-arrow carousel-arrow-right" onClick={next}>
         <ChevronRight size={22} />
       </button>
       <div className="carousel-dots">
@@ -260,7 +301,7 @@ function TestimonialsMobileCarousel() {
           <button
             key={i}
             className={`carousel-dot ${current === i ? 'active' : ''}`}
-            onClick={() => setCurrent(i)}
+            onClick={() => goTo(i)}
           />
         ))}
       </div>
@@ -307,6 +348,16 @@ function Schedule() {
         </div>
         <div className="fade-in" ref={contentRef}>
           <div className="schedule-info">
+            <div className="schedule-booking-card">
+              <p className="schedule-booking-text">
+                Όλα τα μαθήματα πραγματοποιούνται με τη γυμνάστρια
+              </p>
+              <p className="schedule-trainer-name">Αγγελική</p>
+              <p className="schedule-booking-desc">
+                Επικοινωνήστε μαζί μας για να κλείσετε θέση στο μάθημα που σας ενδιαφέρει
+              </p>
+              <a href="#contact" className="btn btn-primary">Επικοινωνία</a>
+            </div>
             <div className="schedule-hours-card">
               <div className="schedule-hours-icon">
                 <Clock size={28} />
@@ -319,23 +370,13 @@ function Schedule() {
                 </div>
                 <div className="schedule-hours-row">
                   <span className="schedule-hours-days">Σάββατο</span>
-                  <span className="schedule-hours-time">09:00 – 14:00</span>
+                  <span className="schedule-hours-time">Κλειστά</span>
                 </div>
-                <div className="schedule-hours-row closed">
+                <div className="schedule-hours-row">
                   <span className="schedule-hours-days">Κυριακή</span>
                   <span className="schedule-hours-time">Κλειστά</span>
                 </div>
               </div>
-            </div>
-            <div className="schedule-booking-card">
-              <p className="schedule-booking-text">
-                Όλα τα μαθήματα πραγματοποιούνται με τη γυμνάστρια
-              </p>
-              <p className="schedule-trainer-name">Αγγελική</p>
-              <p className="schedule-booking-desc">
-                Επικοινωνήστε μαζί μας για να κλείσετε θέση στο μάθημα που σας ενδιαφέρει
-              </p>
-              <a href="#contact" className="btn btn-primary">Επικοινωνία</a>
             </div>
           </div>
         </div>
@@ -355,16 +396,16 @@ function Footer() {
         <div className="footer-col">
           <h4>Επικοινωνία</h4>
           <p><Phone size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 8 }} />
-            +30 210 1234567</p>
+            +30 210 4820515</p>
           <p><Mail size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 8 }} />
             info@sepilatevo.gr</p>
           <p><MapPin size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 8 }} />
-            Αθήνα, Ελλάδα</p>
+            Άγιος Ιωάννης Ρέντης</p>
         </div>
         <div className="footer-col">
           <h4>Ωράριο</h4>
           <p>Δευτέρα - Παρασκευή: 09:00 - 21:00</p>
-          <p>Σάββατο: 09:00 - 14:00</p>
+          <p>Σάββατο: Κλειστά</p>
           <p>Κυριακή: Κλειστά</p>
         </div>
       </div>
@@ -424,6 +465,16 @@ function DotNav() {
 
 /* ===== APP ===== */
 function App() {
+  useEffect(() => {
+    const lenis = new Lenis()
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+    requestAnimationFrame(raf)
+    return () => lenis.destroy()
+  }, [])
+
   return (
     <>
       <Navbar />
