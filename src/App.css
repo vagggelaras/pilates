@@ -749,14 +749,11 @@
   letter-spacing: 0.5px;
 }
 
-/* ===== SNAP SECTIONS ===== */
+/* ===== SECTIONS ===== */
 .snap-section {
-  height: 100vh;
-  height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  overflow: hidden;
   position: relative;
 }
 
@@ -794,9 +791,12 @@
 }
 
 .hero.snap-section {
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 /* All sections after hero sit below the fixed navbar */
@@ -883,12 +883,6 @@
 @media (max-width: 768px) {
   .dot-nav {
     display: none;
-  }
-
-  .snap-section {
-    height: 100vh;
-    height: 100dvh;
-    overflow: visible;
   }
 
   .intro.snap-section {
