@@ -81,9 +81,8 @@ const testimonials = [
 
 /* ===== COMPONENTS ===== */
 
-function Navbar() {
+function Navbar({ menuOpen, setMenuOpen }) {
   const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -92,22 +91,36 @@ function Navbar() {
   }, [])
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+    <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${menuOpen ? 'menu-open' : ''}`}>
       <div className="container">
         <a href="#" className="navbar-logo">SePilateVo</a>
         <button className="mobile-toggle" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-        <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
-          <a href="#intro" onClick={() => setMenuOpen(false)}>Σχετικά</a>
-          <a href="#services" onClick={() => setMenuOpen(false)}>Υπηρεσίες</a>
-          <a href="#testimonials" onClick={() => setMenuOpen(false)}>Κριτικές</a>
-          <a href="#schedule" onClick={() => setMenuOpen(false)}>Πρόγραμμα</a>
-          <a href="#contact" onClick={() => setMenuOpen(false)}>Επικοινωνία</a>
-          <a href="#schedule" className="navbar-cta" onClick={() => setMenuOpen(false)}>Κράτηση</a>
+        <div className="navbar-links">
+          <a href="#intro">Σχετικά</a>
+          <a href="#services">Υπηρεσίες</a>
+          <a href="#testimonials">Κριτικές</a>
+          <a href="#schedule">Πρόγραμμα</a>
+          <a href="#contact">Επικοινωνία</a>
+          <a href="#schedule" className="navbar-cta">Κράτηση</a>
         </div>
       </div>
     </nav>
+  )
+}
+
+function MobileMenu({ menuOpen, setMenuOpen }) {
+  const close = () => setMenuOpen(false)
+  return (
+    <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
+      <a href="#intro" onClick={close}>Σχετικά</a>
+      <a href="#services" onClick={close}>Υπηρεσίες</a>
+      <a href="#testimonials" onClick={close}>Κριτικές</a>
+      <a href="#schedule" onClick={close}>Πρόγραμμα</a>
+      <a href="#contact" onClick={close}>Επικοινωνία</a>
+      <a href="#schedule" className="navbar-cta" onClick={close}>Κράτηση</a>
+    </div>
   )
 }
 
@@ -423,27 +436,36 @@ function DotNav() {
   const [active, setActive] = useState(0)
 
   const scrollToSection = (index) => {
-    const sections = document.querySelectorAll('.snap-section')
-    if (sections[index]) {
-      sections[index].scrollIntoView({ behavior: 'smooth' })
+    const sections = [...document.querySelectorAll('.snap-section'), document.getElementById('contact')]
+    const target = sections[index]
+    if (!target) return
+    if (window.__lenis) {
+      window.__lenis.scrollTo(target)
+    } else {
+      target.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
   useEffect(() => {
-    const sections = document.querySelectorAll('.snap-section')
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = Array.from(sections).indexOf(entry.target)
-            if (index !== -1) setActive(index)
-          }
-        })
-      },
-      { threshold: 0.45 }
-    )
-    sections.forEach((sec) => observer.observe(sec))
-    return () => observer.disconnect()
+    const snapSections = [...document.querySelectorAll('.snap-section')]
+    const contact = document.getElementById('contact')
+    const sections = contact ? [...snapSections, contact] : snapSections
+
+    const update = () => {
+      let maxRatio = -1
+      let bestIndex = 0
+      sections.forEach((sec, i) => {
+        const rect = sec.getBoundingClientRect()
+        const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0)
+        const ratio = visible / Math.min(rect.height, window.innerHeight)
+        if (ratio > maxRatio) { maxRatio = ratio; bestIndex = i }
+      })
+      setActive(bestIndex)
+    }
+
+    window.addEventListener('scroll', update, { passive: true })
+    update()
+    return () => window.removeEventListener('scroll', update)
   }, [])
 
   return (
@@ -465,19 +487,23 @@ function DotNav() {
 
 /* ===== APP ===== */
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   useEffect(() => {
     const lenis = new Lenis()
+    window.__lenis = lenis
     function raf(time) {
       lenis.raf(time)
       requestAnimationFrame(raf)
     }
     requestAnimationFrame(raf)
-    return () => lenis.destroy()
+    return () => { lenis.destroy(); window.__lenis = null }
   }, [])
 
   return (
     <>
-      <Navbar />
+      <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Hero />
       <Intro />
       <Services />
